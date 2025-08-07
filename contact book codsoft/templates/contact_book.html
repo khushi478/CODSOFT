@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Contact Book</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #fef9ef;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .container {
+      background-color: #ffffff;
+      margin-top: 40px;
+      width: 90%;
+      max-width: 550px;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0, 128, 128, 0.15);
+    }
+
+    h1 {
+      text-align: center;
+      color: #007777;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"], input[type="email"], input[type="search"] {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 2px solid #cceeee;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #007777;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #005f5f;
+    }
+
+    .search-box {
+      margin-top: 20px;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+      margin-top: 20px;
+    }
+
+    li {
+      background-color: #e6f7f7;
+      padding: 12px 15px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .info {
+      flex: 1;
+    }
+
+    .info strong {
+      color: #007777;
+    }
+
+    .delete-btn {
+      background-color: transparent;
+      border: none;
+      color: #ff5555;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .delete-btn:hover {
+      color: #cc0000;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Contact Book</h1>
+
+    <input type="text" id="name" placeholder="Full Name">
+    <input type="text" id="phone" placeholder="Phone Number">
+    <input type="email" id="email" placeholder="Email Address">
+    <button onclick="addContact()">Add Contact</button>
+
+    <div class="search-box">
+      <input type="search" id="search" placeholder="Search contact..." onkeyup="searchContacts()">
+    </div>
+
+    <ul id="contactList"></ul>
+  </div>
+
+  <script>
+    let contacts = [];
+
+    function addContact() {
+      const name = document.getElementById("name").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const email = document.getElementById("email").value.trim();
+
+      if (name && phone && email) {
+        contacts.push({ name, phone, email });
+        document.getElementById("name").value = '';
+        document.getElementById("phone").value = '';
+        document.getElementById("email").value = '';
+        renderContacts();
+      } else {
+        alert("Please fill out all fields.");
+      }
+    }
+
+    function renderContacts(filter = "") {
+      const list = document.getElementById("contactList");
+      list.innerHTML = "";
+
+      const filtered = contacts.filter(c =>
+        c.name.toLowerCase().includes(filter.toLowerCase()) ||
+        c.phone.includes(filter)
+      );
+
+      filtered.forEach((contact, index) => {
+        const li = document.createElement("li");
+
+        li.innerHTML = `
+          <div class="info">
+            <strong>${contact.name}</strong><br>
+            📞 ${contact.phone} <br>
+            📧 ${contact.email}
+          </div>
+          <button class="delete-btn" onclick="deleteContact(${index})">🗑</button>
+        `;
+        list.appendChild(li);
+      });
+    }
+
+    function deleteContact(index) {
+      contacts.splice(index, 1);
+      renderContacts(document.getElementById("search").value);
+    }
+
+    function searchContacts() {
+      const keyword = document.getElementById("search").value;
+      renderContacts(keyword);
+    }
+  </script>
+</body>
+</html>
